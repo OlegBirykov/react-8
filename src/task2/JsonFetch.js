@@ -1,17 +1,27 @@
 import PropTypes from 'prop-types';
+import useJsonFetch from './useJsonFetch';
 
 function JsonFetch(props) {
   const { path } = props;  
+
+  const [data, loading, error] = useJsonFetch(process.env.REACT_APP_JSON_SERVER + path);
+
+  const outputData = (
+    <div className="JsonFetch-data">
+      {typeof data === 'object' && Object.keys(data).map((key, i) => <p key={i}>{key + ': ' + data[key]}</p>)}
+    </div>
+  ) 
+
+  const outputError = error && error.message ? error.message : 'Server Not Found';
   
   return (
     <div className="JsonFetch"> 
-      {true && <p className="JsonFetch-data">{path}</p>}
-      {true && (
+      {error ? <p className="JsonFetch-error">{outputError}</p> : outputData}
+      {loading && (
         <div className="JsonFetch-loading">
           <p className="JsonFetch-loading-text">Loading...</p>
         </div>
       )}
-      {false && <p className="JsonFetch-error">Ошибочка вышла</p>}
     </div>
   );
 };
